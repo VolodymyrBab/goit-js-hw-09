@@ -16,7 +16,7 @@ const refs = {
   value: document.querySelectorAll('.value'),
 };
 
-// додаємо класи для css та деволтний стан кнопки
+// додаємо класи для css та дефолтний стан кнопки
 refs.buttonStartRef.classList.add('btn');
 refs.buttonStartRef.setAttribute('disabled', true);
 refs.inputRef.classList.add('input');
