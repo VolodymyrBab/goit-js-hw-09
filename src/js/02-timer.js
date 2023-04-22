@@ -42,6 +42,12 @@ const options = {
     // console.log(selectedDate);
     localStorage.setItem("selectedDate", JSON.stringify(selectedDate));
   },
+  onChange() {
+    if (timer.intervalId !== null) {
+      Notiflix.Notify.warning('Timer cannot be restarted. Wait for the end');
+      refs.buttonStartRef.setAttribute('disabled', true);
+    }
+  },
 };
 
 flatpickr(refs.inputRef, options);
@@ -59,11 +65,17 @@ class Timer {
   constructor({ onTick }) {
     this.intervalId = null;
     this.onTick = onTick;
+    this.isActive = false;
   }
 
   start() {
-    refs.buttonStartRef.setAttribute('disabled', true);
+    if (this.isActive) {
+      refs.buttonStartRef.setAttribute('disabled', true);
+      return;
+    }
 
+    refs.buttonStartRef.setAttribute('disabled', true);
+    this.isActive = true;
     const savedSelectedDate = localStorage.getItem("selectedDate");
     const parsedSelectedDate = Number(JSON.parse(savedSelectedDate));
 
@@ -74,7 +86,10 @@ class Timer {
       this.onTick(timeLeft);
 
       if (deltaTime < 1000) {
+        this.isActive = false;
         clearInterval(this.intervalId);
+        this.intervalId = null;
+        localStorage.removeItem('selectedDate');
         refs.value.forEach(element => {
           element.classList.add('time-finished');
         });
